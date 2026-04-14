@@ -31,7 +31,7 @@ export function Hero() {
           src="/hero-bg.jpg"
           alt="Club Atletico Union - Sede Social"
           fill
-          className="object-cover"
+          className="object-cover object-[70%_center] sm:object-center"
           priority
           quality={90}
         />
