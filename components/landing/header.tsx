@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 
@@ -15,8 +15,10 @@ const navLinks = [
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
@@ -26,34 +28,35 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-white shadow-md"
-          : "bg-white/95"
-      }`}
+          ? "bg-white/80 shadow-lg shadow-black/[0.03] backdrop-blur-xl"
+          : "bg-white/60 backdrop-blur-sm"
+      } ${mounted ? "animate-fade-down" : "opacity-0"}`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href="#inicio"
-          className="text-xl font-bold text-[#1F2937] transition-colors duration-300 hover:text-[#DC2626]"
+          className="text-xl font-bold text-[#1F2937] transition-all duration-300 hover:text-[#DC2626]"
         >
           [Nombre del Profesional]
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
+          {navLinks.map((link, i) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-[#1F2937] transition-colors duration-300 hover:text-[#DC2626]"
+              className="nav-link-animated text-sm font-medium text-[#1F2937] transition-colors duration-300 hover:text-[#DC2626]"
+              style={{ animationDelay: `${(i + 1) * 80}ms` }}
             >
               {link.label}
             </Link>
           ))}
           <Button
             asChild
-            className="bg-[#DC2626] text-white transition-all duration-300 hover:bg-[#B91C1C]"
+            className="btn-shine bg-[#DC2626] text-white transition-all duration-300 hover:bg-[#B91C1C] hover:shadow-lg hover:shadow-red-500/25"
           >
             <Link href="#contacto">Contactar</Link>
           </Button>
@@ -66,7 +69,7 @@ export function Header() {
               <Menu className="h-6 w-6 text-[#1F2937]" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] bg-white">
+          <SheetContent side="right" className="w-[280px] bg-white/95 backdrop-blur-xl">
             <div className="flex flex-col gap-6 pt-8">
               <SheetClose asChild>
                 <Link
@@ -91,7 +94,7 @@ export function Header() {
               <SheetClose asChild>
                 <Button
                   asChild
-                  className="mt-4 w-full bg-[#DC2626] text-white transition-all duration-300 hover:bg-[#B91C1C]"
+                  className="btn-shine mt-4 w-full bg-[#DC2626] text-white transition-all duration-300 hover:bg-[#B91C1C]"
                 >
                   <Link href="#contacto">Contactar</Link>
                 </Button>

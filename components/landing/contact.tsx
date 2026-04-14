@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Send, Clock } from "lucide-react"
+import { Send, Clock, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,6 +14,14 @@ import {
 } from "@/components/ui/select"
 import { useInView } from "@/hooks/use-in-view"
 import { cn } from "@/lib/utils"
+
+const anim = (name: string, delay = 0) => ({
+  animationName: name,
+  animationDuration: "0.7s",
+  animationTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" as const,
+  animationFillMode: "both" as const,
+  animationDelay: `${delay}ms`,
+})
 
 const services = [
   "[Nombre del Servicio 1]",
@@ -30,14 +38,12 @@ export function Contact() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
+
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    
+
     setIsSubmitting(false)
     setIsSubmitted(true)
-    
-    // Reset after showing success message
+
     setTimeout(() => {
       setIsSubmitted(false)
       ;(e.target as HTMLFormElement).reset()
@@ -48,29 +54,36 @@ export function Contact() {
     <section
       id="contacto"
       ref={ref}
-      className="bg-[#F9FAFB] py-20 lg:py-28"
+      className="relative overflow-hidden bg-[#F9FAFB] py-20 lg:py-28"
     >
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      {/* Background accents */}
+      <div className="pointer-events-none absolute -left-32 top-1/4 h-80 w-80 rounded-full bg-gradient-to-r from-red-100/20 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute -right-32 bottom-1/4 h-80 w-80 rounded-full bg-gradient-to-l from-red-50/20 to-transparent blur-3xl" />
+
+      <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div
-          className={cn(
-            "mb-12 text-center transition-all duration-700",
-            isInView ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-          )}
+          className={cn("mb-12 text-center", !isInView && "opacity-0")}
+          style={isInView ? anim("fade-up") : undefined}
         >
           <h2 className="mb-4 text-3xl font-bold text-[#1F2937] sm:text-4xl">
             Contactame
           </h2>
           <p className="text-lg text-[#6B7280]">
-            ¿Tenés alguna consulta o querés conocer más sobre mis servicios?
-            Completá el formulario y te respondo a la brevedad.
+            Tenes alguna consulta o queres conocer mas sobre mis servicios?
+            Completa el formulario y te respondo a la brevedad.
           </p>
+          <div className={cn(
+            "mx-auto mt-4 h-1 rounded-full bg-[#DC2626] transition-all duration-700",
+            isInView ? "w-16 opacity-100" : "w-0 opacity-0"
+          )} />
         </div>
 
         <div
           className={cn(
-            "rounded-2xl bg-white p-6 shadow-lg transition-all delay-200 duration-700 sm:p-10",
-            isInView ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            "rounded-2xl bg-white p-6 shadow-lg transition-all duration-500 hover:shadow-xl sm:p-10",
+            !isInView && "opacity-0"
           )}
+          style={isInView ? anim("fade-up", 200) : undefined}
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6 sm:grid-cols-2">
@@ -87,7 +100,7 @@ export function Contact() {
                   type="text"
                   placeholder="Tu nombre completo"
                   required
-                  className="border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
+                  className="input-glow border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
                 />
               </div>
 
@@ -104,7 +117,7 @@ export function Contact() {
                   type="email"
                   placeholder="tu@email.com"
                   required
-                  className="border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
+                  className="input-glow border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
                 />
               </div>
             </div>
@@ -115,14 +128,14 @@ export function Contact() {
                   htmlFor="telefono"
                   className="text-sm font-medium text-[#1F2937]"
                 >
-                  Teléfono
+                  Telefono
                 </label>
                 <Input
                   id="telefono"
                   name="telefono"
                   type="tel"
                   placeholder="+54 11 1234 5678"
-                  className="border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
+                  className="input-glow border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
                 />
               </div>
 
@@ -131,11 +144,11 @@ export function Contact() {
                   htmlFor="servicio"
                   className="text-sm font-medium text-[#1F2937]"
                 >
-                  Servicio de interés *
+                  Servicio de interes *
                 </label>
                 <Select name="servicio" required>
-                  <SelectTrigger className="border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]">
-                    <SelectValue placeholder="Seleccioná un servicio" />
+                  <SelectTrigger className="input-glow border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]">
+                    <SelectValue placeholder="Selecciona un servicio" />
                   </SelectTrigger>
                   <SelectContent>
                     {services.map((service) => (
@@ -158,17 +171,22 @@ export function Contact() {
               <Textarea
                 id="mensaje"
                 name="mensaje"
-                placeholder="Contame en qué puedo ayudarte..."
+                placeholder="Contame en que puedo ayudarte..."
                 rows={5}
                 required
-                className="border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
+                className="input-glow border-[#E5E7EB] transition-all duration-300 focus:border-[#DC2626] focus:ring-[#DC2626]"
               />
             </div>
 
             <Button
               type="submit"
               disabled={isSubmitting || isSubmitted}
-              className="w-full bg-[#DC2626] py-6 text-lg font-semibold text-white transition-all duration-300 hover:bg-[#B91C1C] disabled:opacity-70"
+              className={cn(
+                "btn-shine w-full py-6 text-lg font-semibold text-white transition-all duration-300 disabled:opacity-70",
+                isSubmitted
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-[#DC2626] hover:bg-[#B91C1C] hover:shadow-lg hover:shadow-red-500/25"
+              )}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -195,7 +213,8 @@ export function Contact() {
                 </span>
               ) : isSubmitted ? (
                 <span className="flex items-center justify-center gap-2">
-                  ¡Mensaje enviado con éxito!
+                  <CheckCircle className="h-5 w-5" />
+                  Mensaje enviado con exito!
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2">
